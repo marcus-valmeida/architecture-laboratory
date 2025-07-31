@@ -1,5 +1,5 @@
 `default_nettype none //Comando para desabilitar declaração automática de wires
-module Mod_Teste (
+module Mod_Teste(
 //Clocks
 input CLOCK_27, CLOCK_50,
 //Chaves e Botoes
@@ -34,57 +34,92 @@ LCD_TEST MyLCD (
 .LCD_RS ( LCD_RS )
 );
 
-wire [31:0] entradaA_ULA, entradaMux;
-wire [31:0] entradaB_ULA;
-wire [31:0] saida_ula;
+wire [31:0] fio_pc;
+wire [31:0] fio_rd;
+wire [2:0] fio_ULAControl;
+wire fio_ULASrc , fio_RegWrite;
+wire [31:0] fio_ULAResult;
+wire [31:0] fio_rd1, fio_rd2;
+wire [31:0] fio_saida_extend;
+wire [31:0] fio_saida_mux;
 
-RegisterFile teste(
-	.wa3(SW[16:14]),
-	.clk(KEY[1]),
+
+pc tes(	
+	.clk(~KEY[1]),
 	.rst(KEY[3]),
-	.we3(1'b1),
-	.wd3(SW[7:0]),
-	.ra1(SW[13:11]),
-	.ra2(3'b010),
-	.rd1(entradaA_ULA),
-	.rd2(entradaMux)
+	.pc(fio_pc)
+);
 	
-	);
-
-assign w_d0x0 = entradaA_ULA[7:0];
-assign w_d0x1 = entradaB_ULA[7:0];
-
-mux2x1 teste2(
-		.in0(entradaMux),
-		.in1(8'h07),
-		.out(entradaB_ULA),
-		.sel(SW[17])
-		
+//saida lcd do pc
+assign w_d0x4 = fio_pc[7:0];
+	
+inst_mem teste(
+	.pc(fio_pc),
+	.rd(fio_rd)
 );
 
-Ula teste1(
-	.w_rd1SrcA(entradaA_ULA),
-	.w_SrcB(entradaB_ULA),
-	.ULAControl(SW[10:8]),
-	.Z(LEDG[0]),
-	.ULAResult(saida_ula)
-	);
-assign w_d0x4 =saida_ula[7:0];
+ControlUnit teste2(
+	.OP(fio_rd[6:0]),
+	.Funct7(fio_rd[14:12]),
+	.Funct3(fio_rd[31:25]),
+	.ULAControl(fio_ULAControl),
+	.ULASrc(fio_ULASrc),
+	.RegWrite(fio_RegWrite)
+);
 
+RegisterFile teste3(
+	.ra1(fio_rd[19:15]),
+	.ra2(fio_rd[24:20]),
+	.wa3(fio_rd[11:7]),
+	.wd3(fio_ULAResult),
+	.rd1(fio_rd1),
+	.rd2(fio_rd2),
+	.x0(w_d0x0), 
+	.x1(w_d0x1), 
+	.x2(w_d0x2), 
+	.x3(w_d0x3),
+   .x4(w_d1x0), 
+	.x5(w_d1x1), 
+	.x6(w_d1x2), 
+	.x7(w_d1x3)
+);
 
-	
-decodificador_display7seg saida_hex0(
-		.sw(SW[3:0]),
-		.hex0(HEX0)
-		);	
-		
-decodificador_display7seg saida_hex1(
-		.sw(SW[7:4]),
-		.hex0(HEX1)
-		);	
+extend teste4(
+	.imm12b(fio_rd[31:20]),
+	.imm32b(fio_saida_extend)
+);
+
+mux2x1 teste5(
+	.in0(fio_rd2),
+	.in1(fio_saida_extend),
+	.sel(fio_ULASrc),
+	.out(fio_saida_mux)
+
+);
+
+Ula test(
+	.w_rd1SrcA(fio_rd1),
+	.w_SrcB(fio_saida_mux),
+	.ULAControl(fio_ULAControl),
+	.ULAResult(fio_ULAResult)
+);
+
+decodificador_display7seg teste6(.sw(fio_rd[3:0]), .hex0(HEX0));
+decodificador_display7seg teste7(.sw(fio_rd[7:4]), .hex0(HEX1));
+decodificador_display7seg teste8(.sw(fio_rd[11:8]), .hex0(HEX2));
+decodificador_display7seg teste9(.sw(fio_rd[15:12]), .hex0(HEX3));
+decodificador_display7seg teste10(.sw(fio_rd[19:16]), .hex0(HEX4));
+decodificador_display7seg teste11(.sw(fio_rd[23:20]), .hex0(HEX5));
+decodificador_display7seg teste12(.sw(fio_rd[27:24]), .hex0(HEX6));
+decodificador_display7seg teste13(.sw(fio_rd[31:28]), .hex0(HEX7));
+
 		
 //ativaçao do clock
 assign LEDG[8] = ~KEY[1];
+assign LEDR[4] = fio_RegWrite;
+assign LEDR[3] = fio_ULASrc;
+assign LEDR[2:0] = fio_ULAControl;
+//assign LEDR[12:5] = 
 
 
 endmodule

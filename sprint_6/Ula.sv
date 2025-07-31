@@ -4,7 +4,7 @@ module Ula(
     input [2:0] ULAControl,
 
     //saída
-    output Z,
+    //output Z,
     output [31:0] ULAResult			
 
 );
@@ -22,7 +22,7 @@ always @(*)
  
 		endcase
 	
-	Z = (ULAResult == 32'b0) ? 1: 0;
+	//Z = (ULAResult == 32'b0) ? 1: 0;
 
 	end
 endmodule
