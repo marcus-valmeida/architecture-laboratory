@@ -46,7 +46,7 @@ wire [31:0] fio_saida_mux;
 
 pc tes(	
 	.clk(~KEY[1]),
-	.rst(KEY[3]),
+	.rst(KEY[2]),
 	.pc(fio_pc)
 );
 	
@@ -60,8 +60,8 @@ inst_mem teste(
 
 ControlUnit teste2(
 	.OP(fio_rd[6:0]),
-	.Funct7(fio_rd[14:12]),
-	.Funct3(fio_rd[31:25]),
+	.Funct3(fio_rd[14:12]),
+	.Funct7(fio_rd[31:25]),
 	.ULAControl(fio_ULAControl),
 	.ULASrc(fio_ULASrc),
 	.RegWrite(fio_RegWrite)
@@ -74,6 +74,9 @@ RegisterFile teste3(
 	.wd3(fio_ULAResult),
 	.rd1(fio_rd1),
 	.rd2(fio_rd2),
+	.clk(~KEY[1]),
+	.rst(KEY[2]),
+	.we3(fio_RegWrite),
 	.x0(w_d0x0), 
 	.x1(w_d0x1), 
 	.x2(w_d0x2), 
