@@ -33,83 +33,97 @@ LCD_TEST MyLCD (
 .LCD_EN ( LCD_EN ),
 .LCD_RS ( LCD_RS )
 );
-wire [11:0] fio_entrada_extend;
-wire [31:0] fio_pc, saida_mux_pc, fio_ImmPC,entrada_in0_mux;
-wire [31:0] fio_rd;
-wire [2:0] fio_ULAControl, fio_ImmSrc;
-wire fio_ULASrc , fio_RegWrite, fio_MemWrite, fio_ResultSrc;
-wire [31:0] fio_ULAResult;
-wire [31:0] fio_rd1, fio_rd2, fio_entrada_wd3;
-wire [31:0] fio_saida_extend;
-wire [31:0] fio_saida_mux,fio_RD;
-wire fio_clock_1hz, fio_Branch, fio_z, PCSrc;
 
-//seletor do mux para o pc
-assign PCSrc = fio_Branch & fio_z;
+//------------------declaracoes das conecxoes-----------------------------------
 
-clock_50 testess(
+wire [31:0] w_PC, w_PCp4,w_ImmPC,w_PCn, w_Inst;
+wire w_PCSrc, fio_clock, w_Branch, w_Zero;
+wire [2:0] w_ULAControl;
+wire [1:0] w_ImmSrc;
+wire w_ULASrc , w_RegWrite, w_MemWrite, w_ResultSrc;
+wire [31:0] w_ULAResult,w_Wd3, w_rd2, w_rd1SrcA, w_SrcB;
+wire [12:0] w_MImm;
+wire [31:0] w_Imm;
+wire [31:0] W_SrcB;
+wire[31:0]w_RData;
+
+//-----------------------------------------------------------------------------
+
+
+
+clock_50 clock_2hz(
    .clk_in(CLOCK_50), 
-   .clk_out(fio_clock_1hz) 
+   .clk_out(fio_clock) 
 );
 
-somador somador_pc(
- .in0(fio_pc),
+somador Adder_4(
+ .in0(w_PC),
  .in1(3'h4),
- .out(entrada_in0_mux)
+ .out(w_PCp4)
 );
 
-somador somador_pc_2(
-	.in0(fio_saida_extend),
-	.in1(fio_pc),
-	.out(fio_ImmPC)
+somador Adder_Imm(
+	.in0(w_Imm),
+	.in1(w_PC),
+	.out(w_ImmPC)
 );
 
-mux2x1 #(.N(32)) muxpc(
-	.in0(entrada_in0_mux),
-	.in1(fio_ImmPC),
-	.sel(PCSrc),
-	.out(saida_mux_pc),
+
+mux2x1 #(.N(32)) MuxPCSrc(
+	.in0(w_PCp4),
+	.in1(w_ImmPC),
+	.sel(w_PCSrc),
+	.out(w_PCn)
 );
-pc tes(	
-	.in(saida_mux_pc),
-	.clk(fio_clock_1hz),
+pc Pc(	
+	.in(w_PCn),
+	.clk(fio_clock),
 	.rst(KEY[3]),
-	.pc(fio_pc)
+	.pc(w_PC)
 );
 	
 //saida lcd do pc
-assign w_d0x4 = fio_pc[7:0];
+assign w_d0x4 = w_PC[7:0];
 	
-Instr_Mem teste(
-	.A(fio_pc),
-	.RD(fio_rd)
+Instr_Mem Inst_Mem(
+	.A(w_PC),
+	.RD(w_Inst)
 );
 
-ControlUnit teste2(
-	.OP(fio_rd[6:0]),
-	.Funct3(fio_rd[14:12]),
-	.Funct7(fio_rd[31:25]),
-	.ULAControl(fio_ULAControl),
-	.ULASrc(fio_ULASrc),
-	.RegWrite(fio_RegWrite),
-	.ImmSrc(fio_ImmSrc),
-	.MemWrite(fio_MemWrite),
-	.ResultSrc(fio_ResultSrc),
-	.Branch(fio_Branch)
+ControlUnit control_unit(
+	//entradas
+	.OP(w_Inst[6:0]),
+	.Funct3(w_Inst[14:12]),
+	.Funct7(w_Inst[31:25]),
+	//saidas
+	.ULAControl(w_ULAControl),
+	.ULASrc(w_ULASrc),
+	.RegWrite(w_RegWrite),
+	.ImmSrc(w_ImmSrc),
+	.MemWrite(w_MemWrite),
+	.ResultSrc(w_ResultSrc),
+	.Branch(w_Branch)
 	
 );
 
-RegisterFile teste3(
-	.ra1(fio_rd[19:15]),
-	.ra2(fio_rd[24:20]),
-	.wa3(fio_rd[11:7]),
-	.wd3(fio_entrada_wd3),
-	.rd1(fio_rd1),
-	.rd2(fio_rd2),
+RegisterFile register_file(
+	//entrada
+	
+	.ra1(w_Inst[19:15]),
+	.ra2(w_Inst[24:20]),
+	.wa3(w_Inst[11:7]),
+	.wd3(w_Wd3),
 	//.clk(~KEY[1]),
-	.clk(fio_clock_1hz),
+	.clk(fio_clock),
 	.rst(KEY[3]),
-	.we3(fio_RegWrite),
+	.we3(w_RegWrite),
+	
+	//saida
+	
+	.rd1(w_rd1SrcA),
+	.rd2(w_rd2),
+	
+	//display
 	.x0(w_d0x0), 
 	.x1(w_d0x1), 
 	.x2(w_d0x2), 
@@ -120,79 +134,80 @@ RegisterFile teste3(
 	.x7(w_d1x3)
 );
 //ajustar
-mux4x2 #(.N(13))testes2(
-	.in0({fio_rd[31], fio_rd[31:20]}),
-	.in1({fio_rd[31], fio_rd[31:25], fio_rd[11:7]}),
-	.in2({fio_rd[31], fio_rd[7], fio_rd[30:25], fio_rd[11:8], 1'b0}),
-	.in3(12'd0),
-	.sel(fio_ImmSrc),
-	.out(fio_entrada_extend)
+mux4x2 #(.N(13)) mux_extend(
+	.in0({w_Inst[31], w_Inst[31:20]}),
+	.in1({w_Inst[31], w_Inst[31:25], w_Inst[11:7]}),
+	.in2({w_Inst[31], w_Inst[7], w_Inst[30:25], w_Inst[11:8], 1'b0}),
+	.in3(12'bx),
+	.sel(w_ImmSrc),
+	.out(w_MImm)
 );
 
-extend teste4(
-	.imm13b(fio_entrada_extend),
-	.imm32b(fio_saida_extend)
+extend MuxImmSrc(
+	.imm13b(w_MImm),
+	.imm32b(w_Imm)
 );
 
-mux2x1 #(.N(32)) teste5(
-	.in0(fio_rd2),
-	.in1(fio_saida_extend),
-	.sel(fio_ULASrc),
-	.out(fio_saida_mux)
+mux2x1 #(.N(32)) MuxULASrc(
+	.in0(w_rd2),
+	.in1(w_Imm),
+	.sel(w_ULASrc),
+	.out(W_SrcB)
 
 );
 
-Ula testest(
-	.w_rd1SrcA(fio_rd1),
-	.w_SrcB(fio_saida_mux),
-	.ULAControl(fio_ULAControl),
-	.ULAResult(fio_ULAResult),
-	.Z(fio_z)
+Ula ULa(
+	//entrada
+	.w_rd1SrcA(w_rd1SrcA),
+	.w_SrcB(w_SrcB),
+	.ULAControl(w_ULAControl),
+	//saida
+	.ULAResult(w_ULAResult),
+	.Z(w_Zero)
 );
 
-Data_Mem test6(
-	.A(fio_ULAResult),
-	.WD(fio_rd2),
+//seletor do mux para o pc
+assign w_PCSrc = w_Branch & w_Zero;
+
+Data_Mem data_mem(
+	//entrada
+	.A(w_ULAResult),
+	.WD(w_rd2),
 	.rst(KEY[3]),
 	//.clk(~KEY[1]),
-	.clk(fio_clock_1hz),
-	.WE(fio_MemWrite),
-	.RD(fio_RD)
+	//saida
+	.clk(fio_clock),
+	.WE(w_MemWrite),
+	.RD(w_RData)
 );
 
-mux2x1 #(.N(32)) este10(
-	.in0(fio_ULAResult),
-	.in1(fio_RD),
-	.sel(fio_ResultSrc),
-	.out(fio_entrada_wd3)
+mux2x1 #(.N(32)) MuxResSrc(
+	.in0(w_ULAResult),
+	.in1(w_RData),
+	.sel(w_ResultSrc),
+	.out(w_Wd3)
 
 );
 
-decodificador_display7seg teste6(.sw(fio_rd[3:0]), .hex0(HEX0));
-decodificador_display7seg teste7(.sw(fio_rd[7:4]), .hex0(HEX1));
-decodificador_display7seg teste8(.sw(fio_rd[11:8]), .hex0(HEX2));
-decodificador_display7seg teste9(.sw(fio_rd[15:12]), .hex0(HEX3));
-decodificador_display7seg teste10(.sw(fio_rd[19:16]), .hex0(HEX4));
-decodificador_display7seg teste11(.sw(fio_rd[23:20]), .hex0(HEX5));
-decodificador_display7seg teste12(.sw(fio_rd[27:24]), .hex0(HEX6));
-decodificador_display7seg teste13(.sw(fio_rd[31:28]), .hex0(HEX7));
+decodificador_display7seg teste6(.sw(w_Inst[3:0]), .hex0(HEX0));
+decodificador_display7seg teste7(.sw(w_Inst[7:4]), .hex0(HEX1));
+decodificador_display7seg teste8(.sw(w_Inst[11:8]), .hex0(HEX2));
+decodificador_display7seg teste9(.sw(w_Inst[15:12]), .hex0(HEX3));
+decodificador_display7seg teste10(.sw(w_Inst[19:16]), .hex0(HEX4));
+decodificador_display7seg teste11(.sw(w_Inst[23:20]), .hex0(HEX5));
+decodificador_display7seg teste12(.sw(w_Inst[27:24]), .hex0(HEX6));
+decodificador_display7seg teste13(.sw(w_Inst[31:28]), .hex0(HEX7));
 
 		
-//ativaçao do clock
-//assign LEDG[8] = ~KEY[1];
-//assign LEDR[8] = fio_clock_1hz;
-//assign LEDR[4] = fio_RegWrite;
-//assign LEDR[3] = fio_ULASrc;
-//assign LEDR[2:0] = fio_ULAControl;
-//assign LEDR[12:5] = 
-assign LEDR[0] = fio_Branch;
-assign LEDR[1] = fio_ResultSrc;
-assign LEDR[2] = fio_MemWrite;
-assign LEDR[5:3] = fio_ULAControl;
-assign LEDR[6] = fio_ULASrc;
-assign LEDR[8:7] = fio_ImmSrc;
-assign LEDR[9] = fio_RegWrite;
-assign LEDG[8] = fio_clock_1hz;
+
+assign LEDR[0] = w_Branch;
+assign LEDR[1] = w_ResultSrc;
+assign LEDR[2] = w_MemWrite;
+assign LEDR[5:3] = w_ULAControl;
+assign LEDR[6] = w_ULASrc;
+assign LEDR[8:7] = w_ImmSrc;
+assign LEDR[9] = w_RegWrite;
+assign LEDG[8] = fio_clock;
 
 
 endmodule

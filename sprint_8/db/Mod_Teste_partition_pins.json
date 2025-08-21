@@ -16,43 +16,15 @@
 					"strict" : false
 				},
 				{
+					"name" : "HEX1[0]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX1[1]",
+					"strict" : false
+				},
+				{
 					"name" : "HEX1[2]",
-					"strict" : false
-				},
-				{
-					"name" : "LEDG[8]",
-					"strict" : false
-				},
-				{
-					"name" : "LEDR[1]",
-					"strict" : false
-				},
-				{
-					"name" : "LEDR[6]",
-					"strict" : false
-				},
-				{
-					"name" : "LEDR[8]",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_EN",
-					"strict" : false
-				},
-				{
-					"name" : "LCD_RS",
-					"strict" : false
-				},
-				{
-					"name" : "LEDR[7]",
-					"strict" : false
-				},
-				{
-					"name" : "LEDR[9]",
-					"strict" : false
-				},
-				{
-					"name" : "LEDR[2]",
 					"strict" : false
 				},
 				{
@@ -73,14 +45,6 @@
 				},
 				{
 					"name" : "HEX2[0]",
-					"strict" : false
-				},
-				{
-					"name" : "HEX2[1]",
-					"strict" : false
-				},
-				{
-					"name" : "HEX2[2]",
 					"strict" : false
 				},
 				{
@@ -112,6 +76,22 @@
 					"strict" : false
 				},
 				{
+					"name" : "HEX4[0]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX4[3]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX4[4]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX4[5]",
+					"strict" : false
+				},
+				{
 					"name" : "HEX5[0]",
 					"strict" : false
 				},
@@ -140,6 +120,14 @@
 					"strict" : false
 				},
 				{
+					"name" : "HEX6[1]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX6[2]",
+					"strict" : false
+				},
+				{
 					"name" : "HEX6[3]",
 					"strict" : false
 				},
@@ -148,7 +136,63 @@
 					"strict" : false
 				},
 				{
-					"name" : "LCD_DATA[7]",
+					"name" : "HEX7[1]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX7[2]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX7[3]",
+					"strict" : false
+				},
+				{
+					"name" : "HEX7[6]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDG[8]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[0]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[1]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[3]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[5]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[6]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[7]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[8]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[9]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_EN",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_RS",
 					"strict" : false
 				},
 				{
@@ -177,6 +221,10 @@
 				},
 				{
 					"name" : "LCD_DATA[6]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[7]",
 					"strict" : false
 				},
 				{

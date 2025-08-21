@@ -1,12 +1,12 @@
-Fitter Status : Successful - Mon Aug 18 22:41:21 2025
+Fitter Status : Successful - Wed Aug 20 22:34:31 2025
 Quartus Prime Version : 24.1std.0 Build 1077 03/04/2025 SC Lite Edition
 Revision Name : Mod_Teste
 Top-level Entity Name : Mod_Teste
 Family : Cyclone V
 Device : 5CGXFC7C7F23C8
 Timing Models : Final
-Logic utilization (in ALMs) : 150 / 56,480 ( < 1 % )
-Total registers : 181
+Logic utilization (in ALMs) : 106 / 56,480 ( < 1 % )
+Total registers : 107
 Total pins : 194 / 268 ( 72 % )
 Total virtual pins : 0
 Total block memory bits : 0 / 7,024,640 ( 0 % )

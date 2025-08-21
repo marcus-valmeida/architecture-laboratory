@@ -1,10 +1,10 @@
-Analysis & Synthesis Status : Successful - Mon Aug 18 22:40:42 2025
+Analysis & Synthesis Status : Successful - Wed Aug 20 22:34:06 2025
 Quartus Prime Version : 24.1std.0 Build 1077 03/04/2025 SC Lite Edition
 Revision Name : Mod_Teste
 Top-level Entity Name : Mod_Teste
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 139
+Total registers : 87
 Total pins : 194
 Total virtual pins : 0
 Total block memory bits : 0

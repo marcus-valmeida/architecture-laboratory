@@ -1,1 +1,2 @@
-Info (10281): Verilog HDL Declaration information at Mod_Teste.sv(38): object "fio_rd" differs only in case from object "fio_RD" in the same scope File: /home/vini/Downloads/sprint_8/Mod_Teste.sv Line: 38
+Warning (10273): Verilog HDL warning at Mod_Teste.sv(141): extended using "x" or "z" File: /home/vini/Downloads/architecture-laboratory/sprint_8/Mod_Teste.sv Line: 141
+Info (10281): Verilog HDL Declaration information at Mod_Teste.sv(44): object "w_SrcB" differs only in case from object "W_SrcB" in the same scope File: /home/vini/Downloads/architecture-laboratory/sprint_8/Mod_Teste.sv Line: 44
